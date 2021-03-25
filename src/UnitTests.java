@@ -29,6 +29,16 @@ public class UnitTests
         AxialGearConfigurator configurator = new AxialGearConfigurator();
         Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
     }
+    @Test
+    void GivenFourPegsShouldReturnCorrectResultWithDenominator()
+    {
+        int[] pegPositions = {1 ,2988, 5964 ,8939};
+        double solutionExpected = 1991;
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        int[] result = configurator.FindAxialFirstGear(pegPositions);
+        double finalRatio = (double)result[0]/(double) result[1];
+        Assertions.assertEquals(solutionExpected, (int)Math.round(finalRatio));
+    }
 
     @Test
     void GivenPegsTooCloseTogetherShouldReturnInvalidResult()
@@ -49,7 +59,7 @@ public class UnitTests
                 configurator.FindAxialFirstGear(pegPositions);
                     });
 
-        String expectedMessage = "20 peg";
+        String expectedMessage = "than 1";
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -89,8 +99,8 @@ public class UnitTests
     {
         int[] pegPositions = {4,12,25,48};
         AxialGearConfigurator configurator = new AxialGearConfigurator();
-        float[][] expectedResult = {{1,0,0,6},{0,1,0,-4},{0,0,1,17}};
-        float[][] result = configurator.convertToReducedRowEchelonForm(configurator.createSystemOfEquations(pegPositions));
+        double[][] expectedResult = {{1,0,0,6},{0,1,0,-4},{0,0,1,17}};
+        double[][] result = configurator.convertToReducedRowEchelonForm(configurator.createSystemOfEquations(pegPositions));
         Assertions.assertArrayEquals(expectedResult,result);
     }
 }

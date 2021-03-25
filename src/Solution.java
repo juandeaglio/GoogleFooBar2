@@ -11,7 +11,7 @@ public class Solution
     public static int[] FindAxialFirstGear(int[] pegPositions)
     {
         int[] result = {-1,-1};
-        float[][] systemOfEquations;
+        double[][] systemOfEquations;
         try
         {
             systemOfEquations = createSystemOfEquations(pegPositions);
@@ -26,12 +26,28 @@ public class Solution
             if (systemOfEquations[i][systemOfEquations[0].length-1] < 1)
                 return result;
         }
-        result[0] = (int)systemOfEquations[0][systemOfEquations[0].length-1]*2;
-        result[1] = 1;
+        double numerator = systemOfEquations[0][systemOfEquations[0].length-1]*2;
+        double denominator = 1;
+        int count = 0;
+        if(numerator % 1 != 0)
+        {
+            while (numerator % 1 != 0 && count < 6)
+            {
+                numerator *= 10;
+                count++;
+            }
+
+            denominator = (Math.pow(10,count));
+
+
+            //result[0] = (int)systemOfEquations[0][systemOfEquations[0].length-1]*2;
+        }
+        result[0] = (int)numerator;
+        result[1] = (int)denominator;
         return result;
     }
 
-    public static float[][] convertToReducedRowEchelonForm(float[][] systemOfEquations)
+    public static double[][] convertToReducedRowEchelonForm(double[][] systemOfEquations)
     {
         int[] pivot = new int[2];
         int current = 0;
@@ -80,7 +96,7 @@ public class Solution
         return systemOfEquations;
     }
 
-    private static void SetNumbersLeftOfLeadingOneToZero(float[][] systemOfEquations, int[] pivot)
+    private static void SetNumbersLeftOfLeadingOneToZero(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = pivot[0]; k >= 0; k--)
         {
@@ -92,25 +108,27 @@ public class Solution
             }
 
             int[] abovePivot = {k, pivot[1]};
-            float complement = -systemOfEquations[abovePivot[0]][abovePivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
+            double complement = (-1*systemOfEquations[abovePivot[0]][abovePivot[1]]) / systemOfEquations[pivot[0]][pivot[1]];
             systemOfEquations[abovePivot[0]] = AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations, pivot, abovePivot, complement);
         }
     }
-    private static void SetZeroBelowPivot(float[][] systemOfEquations, int[] pivot)
+    private static void SetZeroBelowPivot(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = pivot[0]; k < systemOfEquations.length; k++)
         {
             if(k == pivot[0])
                 continue;
             int[] belowPivot = {k, pivot[1]};
-            float complement = -systemOfEquations[belowPivot[0]][belowPivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
+            double num1 = systemOfEquations[belowPivot[0]][belowPivot[1]];
+            double num2 = systemOfEquations[pivot[0]][pivot[1]];
+            double complement = (-1*num1) / num2;
             systemOfEquations[belowPivot[0]] = AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations, pivot, belowPivot, complement);
         }
     }
 
-    private static void Swap(float[][] systemOfEquations, int[] pivot, int[] current)
+    private static void Swap(double[][] systemOfEquations, int[] pivot, int[] current)
     {
-        float[] temp = systemOfEquations[current[0]];
+        double[] temp = systemOfEquations[current[0]];
         systemOfEquations[current[0]] = systemOfEquations[pivot[0]];
         systemOfEquations[pivot[0]] = temp;
         int t = current[0];
@@ -119,7 +137,7 @@ public class Solution
 
     }
 
-    private static void FindPivot(float[][] systemOfEquations, int[] pivot)
+    private static void FindPivot(double[][] systemOfEquations, int[] pivot)
     {
         int[] newPivot = {pivot[0], pivot[1]};
         int initialRow = pivot[0];
@@ -143,7 +161,7 @@ public class Solution
         }
     }
 
-    private static boolean IsColumnZeroes(float[][] systemOfEquations, int[] pivot)
+    private static boolean IsColumnZeroes(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = 0; k < systemOfEquations.length; k++)
         {
@@ -153,7 +171,7 @@ public class Solution
         return true;
 
     }
-    private static boolean IsRowZeroes(float[][] systemOfEquations, int[] pivot)
+    private static boolean IsRowZeroes(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = 0; k < systemOfEquations.length; k++)
         {
@@ -165,25 +183,25 @@ public class Solution
     }
 
 
-    private static float[] AddToAnotherRowMultipliedByOriginalPivot(float[][] systemOfEquation, int[] pivot, int[] pivotToChange, float complement)
+    private static double[] AddToAnotherRowMultipliedByOriginalPivot(double[][] systemOfEquation, int[] pivot, int[] pivotToChange, double complement)
     {
-        float[] addingAndMultiplyingFrom = systemOfEquation[pivot[0]];
-        float[] addedAndMultipliedTo = systemOfEquation[pivotToChange[0]];
+        double[] addingAndMultiplyingFrom = systemOfEquation[pivot[0]];
+        double[] addedAndMultipliedTo = systemOfEquation[pivotToChange[0]];
         for(int l = 0; l < systemOfEquation[0].length; l++)
             addedAndMultipliedTo[l] += addingAndMultiplyingFrom[l]*complement;
         return addedAndMultipliedTo;
     }
 
-    private static void ScaleRow(float[][] systemOfEquations, int[] pivot)
+    private static void ScaleRow(double[][] systemOfEquations, int[] pivot)
     {
-        float divider = systemOfEquations[pivot[0]][pivot[1]];
+        double divider = systemOfEquations[pivot[0]][pivot[1]];
         for(int k = 0; k < systemOfEquations[0].length; k++)
         {
             systemOfEquations[pivot[0]][k] /= divider;
         }
     }
 
-    public static float[][] createSystemOfEquations(int[] pegPositions)
+    public static double[][] createSystemOfEquations(int[] pegPositions)
     {
 
         if(HasDuplicates(pegPositions))
@@ -205,10 +223,10 @@ public class Solution
                 Arrays.sort(pegPositions);
         }
         int i = 1;
-        float[][]equationArray = new float[pegPositions.length-1][];
+        double[][]equationArray = new double[pegPositions.length-1][];
         while(i < pegPositions.length)
         {
-            float[] equation = new float[pegPositions.length+1];
+            double[] equation = new double[pegPositions.length];
             if(pegPositions[i-1] < 1 || pegPositions[i] < 1 )
             {
                 throw new IllegalArgumentException("Peg must be greater than or equal to 1.");

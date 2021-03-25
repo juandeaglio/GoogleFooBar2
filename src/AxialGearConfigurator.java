@@ -1,66 +1,62 @@
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 public class AxialGearConfigurator
 {
     public static void main(String [] args)
     {
-        /*
-        int[] pegs = new int[5];
-        for(int j = 0; j < 100; j++)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                int min = i;
-                int max = 20;
-                pegs[i] = (int)(i *  (Math.random() * (max - min + 1) + min));
-            }
-            System.out.println(Arrays.toString(pegs));
-            System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
-        }*/
-        int[] pegs = {1, 10000};
+        int[] pegs = {1 ,2988, 5964 ,8939};
+        //int[] pegs = {2000, 7500};
         System.out.println(Arrays.toString(pegs));
         System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
+        System.out.println((double)Solution.solution(pegs)[0] / (double)Solution.solution(pegs)[1]);
     }
-   public int[] FindAxialFirstGear(int[] pegPositions)
-   {
-       int[] result = {-1,-1};
-       float[][] systemOfEquations;
-       try
-       {
+    public int[] FindAxialFirstGear(int[] pegPositions)
+    {
+        int[] result = {-1,-1};
+        double[][] systemOfEquations;
+        try
+        {
             systemOfEquations = createSystemOfEquations(pegPositions);
-       }
-       catch (IllegalArgumentException e)
-       {
-           if(!e.getMessage().contains("radii"))
-               throw e;
-            return result;
-       }
-       int smallest = 1;
-       for(int i = 0; i<pegPositions.length; i++)
-       {
-           if(pegPositions[i]>=smallest)
-           {
-               smallest = pegPositions[i];
-           }
-           else
-               return result;
-       }
-       systemOfEquations = convertToReducedRowEchelonForm(systemOfEquations);
-       result[0] = (int)systemOfEquations[0][systemOfEquations.length]*2;
-       if((systemOfEquations[0][systemOfEquations.length])
-       {
+        }
+        catch (IllegalArgumentException e)
+        {
+            if(e.getMessage().contains("radii"))
+                return result;
+            throw e;
+        }
+        systemOfEquations = convertToReducedRowEchelonForm(systemOfEquations);
+        for(int i = 0 ; i < systemOfEquations.length; i++)
+        {
+            if (systemOfEquations[i][systemOfEquations[0].length-1] < 1)
+                return result;
+        }
+        double numerator = systemOfEquations[0][systemOfEquations[0].length-1]*2;
+        double denominator = 1;
+        int count = 0;
+        if(numerator % 1 != 0)
+        {
+            while (numerator % 1 != 0 && count < 6)
+            {
+                numerator *= 10;
+                count++;
+            }
 
-       }
-       result[1] = 1;
-       return result;
-   }
+            denominator = (Math.pow(10,count));
 
-    public float[][] convertToReducedRowEchelonForm(float[][] systemOfEquations)
+
+            //result[0] = (int)systemOfEquations[0][systemOfEquations[0].length-1]*2;
+        }
+
+        result[0] = (int)numerator;
+        result[1] = (int)denominator;
+        return result;
+    }
+
+    public double[][] convertToReducedRowEchelonForm(double[][] systemOfEquations)
     {
         int[] pivot = new int[2];
         int current = 0;
-        System.out.print("Value: " + systemOfEquations[pivot[0]][pivot[1]]);
-        System.out.println(" at Pivot: " + pivot[0] + ", " + pivot[1]);
         for(int i = 0; i < systemOfEquations[0].length; i++)
         {
             pivot[1] = i;
@@ -106,7 +102,8 @@ public class AxialGearConfigurator
         return systemOfEquations;
     }
 
-    private void SetNumbersLeftOfLeadingOneToZero(float[][] systemOfEquations, int[] pivot)
+
+    private void SetNumbersLeftOfLeadingOneToZero(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = pivot[0]; k >= 0; k--)
         {
@@ -118,25 +115,25 @@ public class AxialGearConfigurator
             }
 
             int[] abovePivot = {k, pivot[1]};
-            float complement = -systemOfEquations[abovePivot[0]][abovePivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
+            double complement = -systemOfEquations[abovePivot[0]][abovePivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
             systemOfEquations[abovePivot[0]] = AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations, pivot, abovePivot, complement);
         }
     }
-    private void SetZeroBelowPivot(float[][] systemOfEquations, int[] pivot)
+    private void SetZeroBelowPivot(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = pivot[0]; k < systemOfEquations.length; k++)
         {
             if(k == pivot[0])
                 continue;
             int[] belowPivot = {k, pivot[1]};
-            float complement = -systemOfEquations[belowPivot[0]][belowPivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
+            double complement = -systemOfEquations[belowPivot[0]][belowPivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
             systemOfEquations[belowPivot[0]] = AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations, pivot, belowPivot, complement);
         }
     }
 
-    private void Swap(float[][] systemOfEquations, int[] pivot, int[] current)
+    private void Swap(double[][] systemOfEquations, int[] pivot, int[] current)
     {
-        float[] temp = systemOfEquations[current[0]];
+        double[] temp = systemOfEquations[current[0]];
         systemOfEquations[current[0]] = systemOfEquations[pivot[0]];
         systemOfEquations[pivot[0]] = temp;
         int t = current[0];
@@ -145,7 +142,7 @@ public class AxialGearConfigurator
 
     }
 
-    private void FindPivot(float[][] systemOfEquations, int[] pivot)
+    private void FindPivot(double[][] systemOfEquations, int[] pivot)
     {
         int[] newPivot = {pivot[0], pivot[1]};
         int initialRow = pivot[0];
@@ -169,7 +166,7 @@ public class AxialGearConfigurator
         }
     }
 
-    private boolean IsColumnZeroes(float[][] systemOfEquations, int[] pivot)
+    private boolean IsColumnZeroes(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = 0; k < systemOfEquations.length; k++)
         {
@@ -179,7 +176,7 @@ public class AxialGearConfigurator
         return true;
 
     }
-    private boolean IsRowZeroes(float[][] systemOfEquations, int[] pivot)
+    private boolean IsRowZeroes(double[][] systemOfEquations, int[] pivot)
     {
         for(int k = 0; k < systemOfEquations.length; k++)
         {
@@ -191,18 +188,18 @@ public class AxialGearConfigurator
     }
 
 
-    private float[] AddToAnotherRowMultipliedByOriginalPivot(float[][] systemOfEquation, int[] pivot, int[] pivotToChange, float complement)
+    private double[] AddToAnotherRowMultipliedByOriginalPivot(double[][] systemOfEquation, int[] pivot, int[] pivotToChange, double complement)
     {
-        float[] addingAndMultiplyingFrom = systemOfEquation[pivot[0]];
-        float[] addedAndMultipliedTo = systemOfEquation[pivotToChange[0]];
+        double[] addingAndMultiplyingFrom = systemOfEquation[pivot[0]];
+        double[] addedAndMultipliedTo = systemOfEquation[pivotToChange[0]];
         for(int l = 0; l < systemOfEquation[0].length; l++)
             addedAndMultipliedTo[l] += addingAndMultiplyingFrom[l]*complement;
         return addedAndMultipliedTo;
     }
 
-    private void ScaleRow(float[][] systemOfEquations, int[] pivot)
+    private void ScaleRow(double[][] systemOfEquations, int[] pivot)
     {
-        float divider = systemOfEquations[pivot[0]][pivot[1]];
+        double divider = systemOfEquations[pivot[0]][pivot[1]];
         for(int k = 0; k < systemOfEquations[0].length; k++)
         {
 
@@ -211,17 +208,32 @@ public class AxialGearConfigurator
         }
     }
 
-    public float[][] createSystemOfEquations(int[] pegPositions)
+    public double[][] createSystemOfEquations(int[] pegPositions)
     {
-        int i = 1;
-        float[][]equationArray = new float[pegPositions.length-1][];
+
+        if(HasDuplicates(pegPositions))
+            pegPositions = RemoveDuplicates(pegPositions);
         if(pegPositions.length > 20)
         {
             throw new IllegalArgumentException("Peg array may not consist more than 20 pegs.");
         }
+        if(pegPositions.length <= 1)
+            throw new IllegalArgumentException("Peg array must have more than 1 peg.");
+        int smallest = 0;
+        for(int j = 0; j<pegPositions.length; j++)
+        {
+            if(pegPositions[j]>smallest)
+            {
+                smallest = pegPositions[j];
+            }
+            else
+                Arrays.sort(pegPositions);
+        }
+        int i = 1;
+        double[][]equationArray = new double[pegPositions.length-1][];
         while(i < pegPositions.length)
         {
-            float[] equation = new float[pegPositions.length];
+            double[] equation = new double[pegPositions.length];
             if(pegPositions[i-1] < 1 || pegPositions[i] < 1 )
             {
                 throw new IllegalArgumentException("Peg must be greater than or equal to 1.");
@@ -246,8 +258,8 @@ public class AxialGearConfigurator
                 equation[i] = 1;
             }
 
-            equation[pegPositions.length-1] = pegPositions[i]- pegPositions[i-1]; //total
-            if(equation[pegPositions.length-1] < 2)
+            equation[equation.length-1] = pegPositions[i]- pegPositions[i-1]; //total
+            if(equation[equation.length-1] < 2)
             {
                 throw new IllegalArgumentException("Distances between pegs must greater than or equal to two, since cog radii must be at least 1.");
             }
@@ -255,5 +267,23 @@ public class AxialGearConfigurator
             i++;
         }
         return equationArray;
+    }
+    private  boolean HasDuplicates(int[] pegPositions)
+    {
+        int[] withoutDuplicates;
+        LinkedHashSet<Integer> linkedHashSet = new LinkedHashSet<>( Arrays.asList(Arrays.stream(pegPositions).boxed().toArray(Integer[]::new)));
+        Integer[] numbersWithoutDuplicates = linkedHashSet.toArray(new Integer[] {});
+        withoutDuplicates = new int[numbersWithoutDuplicates.length];
+        return withoutDuplicates.length != pegPositions.length;
+    }
+    private  int[] RemoveDuplicates(int[] pegPositions)
+    {
+        int[] withoutDuplicates;
+        LinkedHashSet<Integer> linkedHashSet = new LinkedHashSet<>( Arrays.asList(Arrays.stream(pegPositions).boxed().toArray(Integer[]::new)));
+        Integer[] numbersWithoutDuplicates = linkedHashSet.toArray(new Integer[] {});
+        withoutDuplicates = new int[numbersWithoutDuplicates.length];
+        for(int i = 0; i < numbersWithoutDuplicates.length; i++)
+            withoutDuplicates[i] = numbersWithoutDuplicates[i];
+        return withoutDuplicates;
     }
 }
