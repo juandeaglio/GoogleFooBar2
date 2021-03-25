@@ -83,4 +83,13 @@ public class UnitTests
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
     }
+    @Test
+    void GivenPegsShouldProduceRREF()
+    {
+        int[] pegPositions = {4,12,25,48};
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        float[][] expectedResult = {{1,0,0,6},{0,1,0,-4},{0,0,1,17}};
+        float[][] result = configurator.convertToReducedRowEchelonForm(configurator.createSystemOfEquations(pegPositions));
+        Assertions.assertArrayEquals(expectedResult,result);
+    }
 }
