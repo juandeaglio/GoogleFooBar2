@@ -31,20 +31,32 @@ public class Solution
         int count = 0;
         if(numerator % 1 != 0)
         {
-            while (numerator % 1 != 0 && count < 6)
+            while (numerator % 1 != 0 && count < 1)
             {
                 numerator *= 10;
                 count++;
             }
-
             denominator = (Math.pow(10,count));
-
-
-            //result[0] = (int)systemOfEquations[0][systemOfEquations[0].length-1]*2;
         }
         result[0] = (int)numerator;
         result[1] = (int)denominator;
+        int gcd = gcd(result[0],result[1] );
+        if(gcd != -1)
+        {
+            result[0] /= gcd;
+            result[1] /= gcd;
+        }
         return result;
+    }
+    public static int gcd(int first, int second)
+    {
+        int gcd = -1;
+        for(int i = 1; i <= first && i <= second; i++)
+        {
+            if(first%i==0 && second%i==0)
+                gcd = i;
+        }
+        return gcd;
     }
 
     public static double[][] convertToReducedRowEchelonForm(double[][] systemOfEquations)

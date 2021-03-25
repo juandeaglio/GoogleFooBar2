@@ -14,6 +14,55 @@ public class UnitTests
         Assertions.assertArrayEquals(configurator.FindAxialFirstGear(pegPositions),solutionExpected);
     }
     @Test
+    void GivenABunchOf0PegsShouldFail()
+    {
+        int[] pegPositions = {0,0,0,0};
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            configurator.FindAxialFirstGear(pegPositions);
+        });
+
+        String expectedMessage = "than 1";
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+    }
+    @Test
+    void GivenANewArrayof0PegsShouldFail()
+    {
+        int[] pegPositions = new int[5];
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            configurator.FindAxialFirstGear(pegPositions);
+        });
+
+        String expectedMessage = "than 1";
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+    }
+    @Test
+    void GivenVeryFarPegsShouldFail()
+    {
+        int[] pegPositions = new int[5];
+        for(int i = 0; i < pegPositions.length; i++)
+        {
+            pegPositions[i] = Integer.MAX_VALUE-(pegPositions.length-i);
+        }
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            configurator.FindAxialFirstGear(pegPositions);
+        });
+
+        String expectedMessage = "less than 10000";
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+    }
+    @Test
     void GivenThreePegsShouldReturnCorrectResult()
     {
         int[] pegPositions = {4,30,50};
@@ -34,6 +83,16 @@ public class UnitTests
     {
         int[] pegPositions = {1 ,2988, 5964 ,8939};
         double solutionExpected = 1991;
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        int[] result = configurator.FindAxialFirstGear(pegPositions);
+        double finalRatio = (double)result[0]/(double) result[1];
+        Assertions.assertEquals(solutionExpected, (int)Math.round(finalRatio));
+    }
+    @Test
+    void GivenAnotherFourPegsShouldReturnCorrectResultWithDenominator()
+    {
+        int[] pegPositions = {1, 2324, 4678, 7432};
+        double solutionExpected = 1815;
         AxialGearConfigurator configurator = new AxialGearConfigurator();
         int[] result = configurator.FindAxialFirstGear(pegPositions);
         double finalRatio = (double)result[0]/(double) result[1];

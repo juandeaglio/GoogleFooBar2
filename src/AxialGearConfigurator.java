@@ -5,7 +5,7 @@ public class AxialGearConfigurator
 {
     public static void main(String [] args)
     {
-        int[] pegs = {1 ,2988, 5964 ,8939};
+        int[] pegs = {1, 2324, 4678, 7432};
         //int[] pegs = {2000, 7500};
         System.out.println(Arrays.toString(pegs));
         System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
@@ -36,7 +36,7 @@ public class AxialGearConfigurator
         int count = 0;
         if(numerator % 1 != 0)
         {
-            while (numerator % 1 != 0 && count < 6)
+            while (numerator % 1 != 0 && count < 1)
             {
                 numerator *= 10;
                 count++;
@@ -50,9 +50,24 @@ public class AxialGearConfigurator
 
         result[0] = (int)numerator;
         result[1] = (int)denominator;
+        int gcd = gcd(result[0],result[1] );
+        if(gcd != -1)
+        {
+            result[0] /= gcd;
+            result[1] /= gcd;
+        }
         return result;
     }
-
+    public  int gcd(int first, int second)
+    {
+        int gcd = -1;
+        for(int i = 1; i <= first && i <= second; i++)
+        {
+            if(first%i==0 && second%i==0)
+                gcd = i;
+        }
+        return gcd;
+    }
     public double[][] convertToReducedRowEchelonForm(double[][] systemOfEquations)
     {
         int[] pivot = new int[2];
