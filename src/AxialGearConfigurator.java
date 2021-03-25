@@ -23,15 +23,13 @@ public class AxialGearConfigurator
             //Step 1
             for(int j = i; j < systemOfEquations[0].length; j++)
             {
-                if(IsColumnZeroes(systemOfEquations, pivot))
+                if(!IsColumnZeroes(systemOfEquations, pivot))
                     break;
                 else
                     pivot[1] = j;
             }
             //Step 2
-            int[] newPivot = {pivot[0], pivot[1]};
-            int initialRow = pivot[0];
-            pivot = FindPivot(systemOfEquations, pivot, newPivot, systemOfEquations.length - initialRow);
+            pivot = FindPivot(systemOfEquations, pivot);
 
             if(systemOfEquations[pivot[0]][pivot[1]] == 0)
             {
@@ -41,7 +39,8 @@ public class AxialGearConfigurator
 
             if(pivot[0] != current)
             {
-                current = SwapToTop(systemOfEquations, pivot, current);
+                int[] toSwap = {current, pivot[1]};
+                Swap(systemOfEquations,toSwap,pivot);
             }
 
             if(systemOfEquations[pivot[0]][pivot[1]] != 1)
@@ -60,7 +59,7 @@ public class AxialGearConfigurator
             boolean skip = false;
             for(int k = 0; k < systemOfEquations[0].length; k++)
             {
-                if(systemOfEquations[pivot[0]+1][k] != 0)
+                if(systemOfEquations[pivot[0]+1][k] == 0)
                 {
                     skip = true;
                     break;
@@ -86,31 +85,43 @@ public class AxialGearConfigurator
 
             int[] abovePivot = {k, pivot[1]};
             int complement = -systemOfEquations[abovePivot[0]][abovePivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
-            AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations[0], pivot, abovePivot, complement);
+            systemOfEquations[abovePivot[0]] = AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations, pivot, abovePivot, complement);
         }
     }
 
-    private int SwapToTop(int[][] systemOfEquations, int[] pivot, int current) {
-        int[] temp = systemOfEquations[current];
-        systemOfEquations[current] = systemOfEquations[pivot[0]];
+    private void Swap(int[][] systemOfEquations, int[] pivot, int[] current)
+    {
+        int[] temp = systemOfEquations[current[0]];
+        systemOfEquations[current[0]] = systemOfEquations[pivot[0]];
         systemOfEquations[pivot[0]] = temp;
-        int t = current;
-        current = pivot[0];
+        int t = current[0];
+        current[0] = pivot[0];
         pivot[0] = t;
-        return current;
+
     }
 
-    private int[] FindPivot(int[][] systemOfEquations, int[] pivot, int[] newPivot, int i1) {
-        for(int k = pivot[0]; k < i1; k++)
+    private int[] FindPivot(int[][] systemOfEquations, int[] pivot)
+    {
+        int[] newPivot = {pivot[0], pivot[1]};
+        int initialRow = pivot[0];
+        for(int k = pivot[0]; k < systemOfEquations.length - initialRow; k++)
         {
-            pivot[0] = k;
+            newPivot[0] = k;
+            if(systemOfEquations[pivot[0]][pivot[1]] == 1)
+            {
+                Swap(systemOfEquations, newPivot, pivot);
+            }
+        }
+        newPivot[0] = pivot[0];
+        for(int k = pivot[0]; k < systemOfEquations.length - initialRow; k++)
+        {
+            newPivot[0] = k;
             if(systemOfEquations[pivot[0]][pivot[1]] != 0)
             {
-                newPivot[0] = k;
+                pivot[0] = k;
                 break;
             }
         }
-        pivot = newPivot;
         return pivot;
     }
 
@@ -132,14 +143,15 @@ public class AxialGearConfigurator
                 continue;
             int[] belowPivot = {k, pivot[1]};
             int complement = -systemOfEquations[belowPivot[0]][belowPivot[1]] / systemOfEquations[pivot[0]][pivot[1]];
-            AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations[0], pivot, belowPivot, complement);
+            systemOfEquations[belowPivot[0]] = AddToAnotherRowMultipliedByOriginalPivot(systemOfEquations, pivot, belowPivot, complement);
         }
     }
 
-    private void AddToAnotherRowMultipliedByOriginalPivot(int[] systemOfEquation, int[] pivot, int[] belowPivot, int complement)
+    private int[] AddToAnotherRowMultipliedByOriginalPivot(int[][] systemOfEquation, int[] pivot, int[] belowPivot, int complement)
     {
-        for(int l = 0; l < systemOfEquation.length; l++)
+        for(int l = 0; l < systemOfEquation[0].length; l++)
             belowPivot[l] += pivot[l]*complement;
+        return belowPivot;
     }
 
     private void ScaleRow(int[][] systemOfEquations, int[] pivot)
@@ -147,10 +159,9 @@ public class AxialGearConfigurator
         int divider = systemOfEquations[pivot[0]][pivot[1]];
         for(int k = 0; k < systemOfEquations[0].length; k++)
         {
-            int[] temp = systemOfEquations[pivot[0]];
-            for(int l = 0; l < temp.length; l++)
+            for(int l = 0; l < systemOfEquations[0].length; l++)
             {
-               temp[l] /= divider;
+                systemOfEquations[pivot[0]][l] /= divider;
             }
         }
     }

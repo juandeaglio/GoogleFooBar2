@@ -22,6 +22,14 @@ public class UnitTests
         Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
     }
     @Test
+    void GivenFourPegsShouldReturnCorrectResult()
+    {
+        int[] pegPositions = {2,16,35,55};
+        int[] solutionExpected = {10,1};
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
+    }
+    @Test
     void GivenPegsTooCloseTogetherShouldReturnInvalidResult()
     {
         int[] pegPositions = {1,2,3,4,5};
