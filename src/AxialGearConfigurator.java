@@ -1,10 +1,25 @@
+import java.util.Arrays;
+
 public class AxialGearConfigurator
 {
     public static void main(String [] args)
     {
-        int[] pegs = {2,16,35,55};
-        AxialGearConfigurator gearConfigurator = new AxialGearConfigurator();
-        gearConfigurator.FindAxialFirstGear(pegs);
+        /*
+        int[] pegs = new int[5];
+        for(int j = 0; j < 100; j++)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                int min = i;
+                int max = 20;
+                pegs[i] = (int)(i *  (Math.random() * (max - min + 1) + min));
+            }
+            System.out.println(Arrays.toString(pegs));
+            System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
+        }*/
+        int[] pegs = {1, 10000};
+        System.out.println(Arrays.toString(pegs));
+        System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
     }
    public int[] FindAxialFirstGear(int[] pegPositions)
    {
@@ -20,8 +35,22 @@ public class AxialGearConfigurator
                throw e;
             return result;
        }
+       int smallest = 1;
+       for(int i = 0; i<pegPositions.length; i++)
+       {
+           if(pegPositions[i]>=smallest)
+           {
+               smallest = pegPositions[i];
+           }
+           else
+               return result;
+       }
        systemOfEquations = convertToReducedRowEchelonForm(systemOfEquations);
        result[0] = (int)systemOfEquations[0][systemOfEquations.length]*2;
+       if((systemOfEquations[0][systemOfEquations.length])
+       {
+
+       }
        result[1] = 1;
        return result;
    }

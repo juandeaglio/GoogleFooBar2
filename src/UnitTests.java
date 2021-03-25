@@ -29,6 +29,7 @@ public class UnitTests
         AxialGearConfigurator configurator = new AxialGearConfigurator();
         Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
     }
+
     @Test
     void GivenPegsTooCloseTogetherShouldReturnInvalidResult()
     {
