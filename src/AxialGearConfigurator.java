@@ -2,15 +2,27 @@ public class AxialGearConfigurator
 {
     public static void main(String [] args)
     {
-        int[] pegs = {4, 30 ,50};
+        int[] pegs = {2,16,35,55};
         AxialGearConfigurator gearConfigurator = new AxialGearConfigurator();
         gearConfigurator.FindAxialFirstGear(pegs);
     }
    public int[] FindAxialFirstGear(int[] pegPositions)
    {
        int[] result = {-1,-1};
-       float[][]systemOfEquations = createSystemOfEquations(pegPositions);
+       float[][] systemOfEquations;
+       try
+       {
+            systemOfEquations = createSystemOfEquations(pegPositions);
+       }
+       catch (IllegalArgumentException e)
+       {
+           if(!e.getMessage().contains("radii"))
+               throw e;
+            return result;
+       }
        systemOfEquations = convertToReducedRowEchelonForm(systemOfEquations);
+       result[0] = (int)systemOfEquations[0][systemOfEquations.length]*2;
+       result[1] = 1;
        return result;
    }
 
@@ -206,6 +218,10 @@ public class AxialGearConfigurator
             }
 
             equation[pegPositions.length-1] = pegPositions[i]- pegPositions[i-1]; //total
+            if(equation[pegPositions.length-1] < 2)
+            {
+                throw new IllegalArgumentException("Distances between pegs must greater than or equal to two, since cog radii must be at least 1.");
+            }
             equationArray[i-1] = equation;
             i++;
         }
