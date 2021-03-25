@@ -19,7 +19,7 @@ public class UnitTests
         int[] pegPositions = {4,30,50};
         int[] solutionExpected = {12,1};
         AxialGearConfigurator configurator = new AxialGearConfigurator();
-        Assertions.assertArrayEquals(configurator.FindAxialFirstGear(pegPositions),solutionExpected);
+        Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
     }
     @Test
     void GivenPegsTooCloseTogetherShouldReturnInvalidResult()
@@ -27,7 +27,7 @@ public class UnitTests
         int[] pegPositions = {1,2,3,4,5};
         int[] solutionExpected = {-1,-1};
         AxialGearConfigurator configurator = new AxialGearConfigurator();
-        Assertions.assertArrayEquals(configurator.FindAxialFirstGear(pegPositions),solutionExpected);
+        Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
     }
     @Test
     void GivenMoreThan20PegsShouldThrowException()
