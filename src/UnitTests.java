@@ -71,6 +71,24 @@ public class UnitTests
         Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
     }
     @Test
+    void GivenThreeShortestPegsShouldReturnCorrectResult()
+    {
+        int[] pegPositions = {1,4,6};
+        int[] solutionExpected = {2,1};
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        Assertions.assertArrayEquals(solutionExpected, configurator.FindAxialFirstGear(pegPositions));
+    }
+    @Test
+    void GivenThreeLargestPegsShouldReturnCorrectResult()
+    {
+        int[] pegPositions = {1,4996, 9989};
+        int[] solutionExpected = {4,1};
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        int[] result = configurator.FindAxialFirstGear(pegPositions);
+        double finalRatio = (double)result[0]/(double) result[1];
+        Assertions.assertEquals(solutionExpected[0], (int)Math.round(finalRatio));
+    }
+    @Test
     void GivenFourPegsShouldReturnCorrectResult()
     {
         int[] pegPositions = {2,16,35,55};
@@ -161,5 +179,29 @@ public class UnitTests
         double[][] expectedResult = {{1,0,0,6},{0,1,0,-4},{0,0,1,17}};
         double[][] result = configurator.convertToReducedRowEchelonForm(configurator.createSystemOfEquations(pegPositions));
         Assertions.assertArrayEquals(expectedResult,result);
+    }
+    @Test
+    void GivenPegsThenSolvingForRadiusShouldProvideTotalLength()
+    {
+
+        AxialGearConfigurator configurator = new AxialGearConfigurator();
+        int[] pegPositions = {1 ,2988, 5964 ,8939};
+        double solutionExpected = 1990 + (double)(2)/(double) (3);
+        int totalLength = pegPositions[pegPositions.length-1]-pegPositions[0];
+        double[][] result = configurator.convertToReducedRowEchelonForm(configurator.createSystemOfEquations(pegPositions));
+        float sum = 0;
+        for(int i = 0; i < result.length; i++)
+        {
+            if(i == 0)
+            {
+                sum += result[i][result[0].length-1]*2;
+                sum += result[i][result[0].length-1];
+            }
+            else
+                sum += result[i][result[0].length-1]*2;
+
+        }
+        Assertions.assertEquals(totalLength,sum);
+        Assertions.assertEquals(solutionExpected,(double)(configurator.FindAxialFirstGear(pegPositions)[0])/ (double)(configurator.FindAxialFirstGear(pegPositions)[1]));
     }
 }

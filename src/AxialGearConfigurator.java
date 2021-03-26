@@ -5,8 +5,9 @@ public class AxialGearConfigurator
 {
     public static void main(String [] args)
     {
-        int[] pegs = {1, 2324, 4678, 7432};
+        //int[] pegs = {2, 1830, 3664, 5498, 7321, 9177, 11065, 12893};
         //int[] pegs = {2000, 7500};
+        int[] pegs = {1 ,2988, 5964 ,8939};
         System.out.println(Arrays.toString(pegs));
         System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
         System.out.println((double)Solution.solution(pegs)[0] / (double)Solution.solution(pegs)[1]);
@@ -33,32 +34,25 @@ public class AxialGearConfigurator
         }
         double numerator = systemOfEquations[0][systemOfEquations[0].length-1]*2;
         double denominator = 1;
-        int count = 0;
-        if(numerator % 1 != 0)
-        {
-            while (numerator % 1 != 0 && count < 1)
-            {
-                numerator *= 10;
-                count++;
-            }
-
-            denominator = (Math.pow(10,count));
-
-
-            //result[0] = (int)systemOfEquations[0][systemOfEquations[0].length-1]*2;
-        }
-
-        result[0] = (int)numerator;
-        result[1] = (int)denominator;
-        int gcd = gcd(result[0],result[1] );
-        if(gcd != -1)
-        {
-            result[0] /= gcd;
-            result[1] /= gcd;
-        }
+        int[]fraction = solveIntoFraction(numerator, denominator);
+        result[0] = fraction[0];
+        result[1] = fraction[1];
         return result;
     }
-    public  int gcd(int first, int second)
+    public int[] solveIntoFraction(double numerator, double denominator)
+    {
+        int result[] = {0,0};
+        double x1 = numerator;
+        double x2 = numerator*10;
+        x2=x2-x1;
+        int x3 =(int)x2;
+        int commonFactor = gcd(x3,9);
+
+        result[0] = (int)x3/commonFactor;
+        result[1] = (int)9/commonFactor;
+        return result;
+    }
+    public int gcd(int first, int second)
     {
         int gcd = -1;
         for(int i = 1; i <= first && i <= second; i++)

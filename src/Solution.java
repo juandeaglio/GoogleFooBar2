@@ -6,20 +6,21 @@ public class Solution
     public static int[] solution(int[] pegs)
     {
         // Your code here
-        return FindAxialFirstGear(pegs);
+        int[] newPegs = pegs;
+        return FindAxialFirstGear(newPegs);
     }
     public static int[] FindAxialFirstGear(int[] pegPositions)
     {
         int[] result = {-1,-1};
         double[][] systemOfEquations;
-        try
-        {
+        //try
+        //{
             systemOfEquations = createSystemOfEquations(pegPositions);
-        }
-        catch (IllegalArgumentException e)
-        {
-            return result;
-        }
+       //}
+        //catch (IllegalArgumentException e)
+        //{
+            //return result;
+        //}
         systemOfEquations = convertToReducedRowEchelonForm(systemOfEquations);
         for(int i = 0 ; i < systemOfEquations.length; i++)
         {
@@ -28,24 +29,22 @@ public class Solution
         }
         double numerator = systemOfEquations[0][systemOfEquations[0].length-1]*2;
         double denominator = 1;
-        int count = 0;
-        if(numerator % 1 != 0)
-        {
-            while (numerator % 1 != 0 && count < 1)
-            {
-                numerator *= 10;
-                count++;
-            }
-            denominator = (Math.pow(10,count));
-        }
-        result[0] = (int)numerator;
-        result[1] = (int)denominator;
-        int gcd = gcd(result[0],result[1] );
-        if(gcd != -1)
-        {
-            result[0] /= gcd;
-            result[1] /= gcd;
-        }
+        int[]fraction = solveIntoFraction(numerator, denominator);
+        result[0] = fraction[0];
+        result[1] = fraction[1];
+        return result;
+    }
+    public static int[] solveIntoFraction(double numerator, double denominator)
+    {
+        int result[] = {0,0};
+        double x1 = numerator;
+        double x2 = numerator*10;
+        x2=x2-x1;
+        int x3 =(int)x2;
+        int commonFactor = gcd(x3,9);
+
+        result[0] = (int)x3/commonFactor;
+        result[1] = (int)9/commonFactor;
         return result;
     }
     public static int gcd(int first, int second)
@@ -220,10 +219,10 @@ public class Solution
             pegPositions = RemoveDuplicates(pegPositions);
         if(pegPositions.length > 20)
         {
-            throw new IllegalArgumentException("Peg array may not consist more than 20 pegs.");
+           // throw new IllegalArgumentException("Peg array may not consist more than 20 pegs.");
         }
-        if(pegPositions.length <= 1)
-            throw new IllegalArgumentException("Peg array must have more than 1 peg.");
+        //if(pegPositions.length <= 1)
+            //throw new IllegalArgumentException("Peg array must have more than 1 peg.");
         int smallest = 0;
         for(int j = 0; j<pegPositions.length; j++)
         {
@@ -241,11 +240,11 @@ public class Solution
             double[] equation = new double[pegPositions.length];
             if(pegPositions[i-1] < 1 || pegPositions[i] < 1 )
             {
-                throw new IllegalArgumentException("Peg must be greater than or equal to 1.");
+                //throw new IllegalArgumentException("Peg must be greater than or equal to 1.");
             }
             if(pegPositions[i-1] > 10000 || pegPositions[i] > 10000)
             {
-                throw new IllegalArgumentException("Peg must be less than 10000.");
+               // throw new IllegalArgumentException("Peg must be less than 10000.");
             }
              if(i==1)
             {
@@ -266,7 +265,7 @@ public class Solution
             equation[equation.length-1] = pegPositions[i]- pegPositions[i-1]; //total
             if(equation[equation.length-1] < 2)
             {
-                throw new IllegalArgumentException("Distances between pegs must greater than or equal to two, since cog radii must be at least 1.");
+               // throw new IllegalArgumentException("Distances between pegs must greater than or equal to two, since cog radii must be at least 1.");
             }
             equationArray[i-1] = equation;
             i++;
