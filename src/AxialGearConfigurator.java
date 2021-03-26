@@ -7,7 +7,7 @@ public class AxialGearConfigurator
     {
         //int[] pegs = {2, 1830, 3664, 5498, 7321, 9177, 11065, 12893};
         //int[] pegs = {2000, 7500};
-        int[] pegs = {1 ,2988, 5964 ,8939};
+        int[] pegs =  {1, 2324, 4678, 7432};
         System.out.println(Arrays.toString(pegs));
         System.out.println(Solution.solution(pegs)[0] + ", " + Solution.solution(pegs)[1]);
         System.out.println((double)Solution.solution(pegs)[0] / (double)Solution.solution(pegs)[1]);
@@ -34,22 +34,39 @@ public class AxialGearConfigurator
         }
         double numerator = systemOfEquations[0][systemOfEquations[0].length-1]*2;
         double denominator = 1;
-        int[]fraction = solveIntoFraction(numerator, denominator);
-        result[0] = fraction[0];
-        result[1] = fraction[1];
+        if(numerator%1!= 0)
+        {
+            int[] fraction = solveIntoFraction(numerator);
+            result[0] = fraction[0];
+            result[1] = fraction[1];
+        }
+        else
+        {
+            result[0] = (int)numerator;
+            result[1] = (int)denominator;
+        }
         return result;
     }
-    public int[] solveIntoFraction(double numerator, double denominator)
+    public int[] solveIntoFraction(double numerator)
     {
         int result[] = {0,0};
         double x1 = numerator;
-        double x2 = numerator*10;
-        x2=x2-x1;
-        int x3 =(int)x2;
-        int commonFactor = gcd(x3,9);
+        double x2 = numerator;
+        double x3 = x2*10;
+        int count = 1;
+        while((x3-x1) < 0.000000001)
+        {
+            x3 *= 10;
+            count++;
+        }
+        x2=Math.round(x3-x1);
+        int newNumerator;
+        newNumerator =(int)x2;
 
-        result[0] = (int)x3/commonFactor;
-        result[1] = (int)9/commonFactor;
+        int commonFactor = gcd(newNumerator,(int)(Math.pow(10,count))-1);
+
+        result[0] = newNumerator/commonFactor;
+        result[1] = ((int)(Math.pow(10,count))-1)/commonFactor;
         return result;
     }
     public int gcd(int first, int second)

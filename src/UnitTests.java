@@ -100,21 +100,21 @@ public class UnitTests
     void GivenFourPegsShouldReturnCorrectResultWithDenominator()
     {
         int[] pegPositions = {1 ,2988, 5964 ,8939};
-        double solutionExpected = 1991;
+        double solutionExpected = 1990 + (double)2/(double)3;
         AxialGearConfigurator configurator = new AxialGearConfigurator();
         int[] result = configurator.FindAxialFirstGear(pegPositions);
         double finalRatio = (double)result[0]/(double) result[1];
-        Assertions.assertEquals(solutionExpected, (int)Math.round(finalRatio));
+        Assertions.assertEquals(solutionExpected, finalRatio);
     }
     @Test
     void GivenAnotherFourPegsShouldReturnCorrectResultWithDenominator()
     {
         int[] pegPositions = {1, 2324, 4678, 7432};
-        double solutionExpected = 1815;
+        double solutionExpected = 1815 + (double)1/(double)3;
         AxialGearConfigurator configurator = new AxialGearConfigurator();
         int[] result = configurator.FindAxialFirstGear(pegPositions);
         double finalRatio = (double)result[0]/(double) result[1];
-        Assertions.assertEquals(solutionExpected, (int)Math.round(finalRatio));
+        Assertions.assertEquals(solutionExpected, finalRatio);
     }
 
     @Test
